@@ -1,18 +1,29 @@
 'use strict';
 
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
 const selectFileBtn = document.getElementById('select-file');
+const fileInfo = document.getElementById('file-info');
 const fileNameEl = document.getElementById('file-name');
+const fileSizeEl = document.getElementById('file-size');
 const formatSelect = document.getElementById('format');
-const outDirInput = document.getElementById('out-dir');
 const startBtn = document.getElementById('start');
 const logPanel = document.getElementById('log-panel');
 const logArea = document.getElementById('log');
 const resultBlock = document.getElementById('result');
-const resultPathEl = document.getElementById('result-path');
-const openFolderBtn = document.getElementById('open-folder');
+const downloadInstrumentalBtn = document.getElementById('download-instrumental');
+const downloadVocalBtn = document.getElementById('download-vocal');
 
 let currentFile = null;
-let lastOutDir = null;
+let uploadedFilename = null;
+
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
 
 function appendLog(message, type = 'info') {
   const timestamp = new Date().toLocaleTimeString();
@@ -23,30 +34,100 @@ function appendLog(message, type = 'info') {
 }
 
 async function initFormats() {
-  const formats = await window.api.getFormats();
-  formatSelect.innerHTML = '';
-  formats.forEach((item) => {
-    const option = document.createElement('option');
-    option.value = item;
-    option.textContent = item.toUpperCase();
-    formatSelect.appendChild(option);
-  });
+  try {
+    const response = await fetch('/api/formats');
+    const data = await response.json();
+    if (data.success) {
+      formatSelect.innerHTML = '';
+      data.formats.forEach((item) => {
+        const option = document.createElement('option');
+        option.value = item;
+        option.textContent = item.toUpperCase();
+        formatSelect.appendChild(option);
+      });
+    }
+  } catch (err) {
+    console.error('Failed to load formats:', err);
+  }
 }
 
-selectFileBtn.addEventListener('click', async () => {
-  const filePath = await window.api.selectFile();
-  if (!filePath) {
-    return;
-  }
-  currentFile = filePath;
-  fileNameEl.textContent = filePath;
-  fileNameEl.classList.remove('muted');
+function handleFileSelect(file) {
+  if (!file) return;
+
+  currentFile = file;
+  fileNameEl.textContent = file.name;
+  fileSizeEl.textContent = formatFileSize(file.size);
+  fileInfo.hidden = false;
+  dropZone.classList.add('has-file');
   startBtn.disabled = false;
   logPanel.hidden = false;
   logArea.textContent = '';
   resultBlock.hidden = true;
-  appendLog(`已选择文件: ${filePath}`, 'info');
+  appendLog(`已选择文件: ${file.name} (${formatFileSize(file.size)})`, 'info');
+}
+
+selectFileBtn.addEventListener('click', () => {
+  fileInput.click();
 });
+
+fileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  handleFileSelect(file);
+});
+
+dropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropZone.classList.add('drag-over');
+});
+
+dropZone.addEventListener('dragleave', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+});
+
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    fileInput.files = e.dataTransfer.files;
+    handleFileSelect(file);
+  }
+});
+
+async function uploadFile(file) {
+  const formData = new FormData();
+  formData.append('audio', file);
+
+  const response = await fetch('/api/upload', {
+    method: 'POST',
+    body: formData,
+  });
+
+  const data = await response.json();
+  if (!data.success) {
+    throw new Error(data.message || '上传失败');
+  }
+
+  return data.file.filename;
+}
+
+async function separateAudio(filename, format) {
+  const response = await fetch('/api/separate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ filename, format }),
+  });
+
+  const data = await response.json();
+  if (!data.success) {
+    throw new Error(data.message || '处理失败');
+  }
+
+  return data.result;
+}
 
 startBtn.addEventListener('click', async () => {
   if (!currentFile) {
@@ -56,32 +137,28 @@ startBtn.addEventListener('click', async () => {
 
   startBtn.disabled = true;
   appendLog('═══════════════════════════════════════════', 'info');
-  appendLog('>>> 初始化分离进程...', 'info');
-  appendLog('═══════════════════════════════════════════', 'info');
+  appendLog('>>> 上传文件中...', 'info');
 
   const format = formatSelect.value || 'wav';
-  const outDir = outDirInput.value.trim() || undefined;
 
   try {
-    const response = await window.api.separateAudio({
-      input: currentFile,
-      outDir,
-      format,
-    });
+    uploadedFilename = await uploadFile(currentFile);
+    appendLog('>>> 文件上传成功', 'success');
+    appendLog('>>> 初始化分离进程...', 'info');
+    appendLog('═══════════════════════════════════════════', 'info');
 
-    if (!response?.success) {
-      throw new Error(response?.message || '未知错误');
-    }
-
-    const { instrumentalPath, vocalPath, outDir: resultDir } = response.result;
-    lastOutDir = resultDir;
+    const result = await separateAudio(uploadedFilename, format);
 
     appendLog('───────────────────────────────────────────', 'info');
-    appendLog('伴奏已输出: ' + instrumentalPath, 'success');
-    appendLog('人声已输出: ' + vocalPath, 'success');
+    appendLog('伴奏已生成: ' + result.instrumentalFilename, 'success');
+    appendLog('人声已生成: ' + result.vocalFilename, 'success');
     appendLog('───────────────────────────────────────────', 'info');
 
-    resultPathEl.textContent = resultDir;
+    downloadInstrumentalBtn.href = result.instrumental;
+    downloadInstrumentalBtn.download = result.instrumentalFilename;
+    downloadVocalBtn.href = result.vocal;
+    downloadVocalBtn.download = result.vocalFilename;
+
     resultBlock.hidden = false;
     appendLog('▓▓▓▓▓▓▓▓▓▓ 处理完成 ▓▓▓▓▓▓▓▓▓▓', 'success');
   } catch (err) {
@@ -89,15 +166,6 @@ startBtn.addEventListener('click', async () => {
   } finally {
     startBtn.disabled = false;
   }
-});
-
-openFolderBtn.addEventListener('click', () => {
-  if (!lastOutDir) {
-    appendLog('当前没有可打开的目录', 'error');
-    return;
-  }
-  window.api.openFolder(lastOutDir);
-  appendLog('>>> 正在打开输出目录...', 'info');
 });
 
 initFormats();

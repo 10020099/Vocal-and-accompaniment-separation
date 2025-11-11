@@ -1,20 +1,22 @@
 {
   "name": "vocal-background-splitter",
   "version": "1.0.0",
-  "description": "基于 FFmpeg 的人声与伴奏分离命令行工具",
+  "description": "基于 FFmpeg 的人声与伴奏分离 Web 应用",
   "bin": {
     "vocal-split": "./src/index.js"
   },
   "type": "commonjs",
-  "main": "src/gui.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node ./src/index.js",
-    "gui": "electron ./src/gui.js"
+    "start": "node ./src/server.js",
+    "cli": "node ./src/index.js"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
-    "electron": "^31.0.0"
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "cors": "^2.8.5"
   }
 }

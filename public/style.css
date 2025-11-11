@@ -378,3 +378,139 @@ pre#log::-webkit-scrollbar-thumb {
   color: var(--neon-yellow);
   border-color: var(--neon-yellow);
 }
+
+.drop-zone {
+  border: 3px dashed var(--neon-cyan);
+  border-radius: 8px;
+  padding: 48px 32px;
+  text-align: center;
+  background: rgba(0, 243, 255, 0.03);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.drop-zone:hover {
+  background: rgba(0, 243, 255, 0.08);
+  border-color: var(--neon-pink);
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+}
+
+.drop-zone.drag-over {
+  background: rgba(0, 243, 255, 0.15);
+  border-color: var(--neon-green);
+  box-shadow: 0 0 30px rgba(57, 255, 20, 0.5);
+  transform: scale(1.02);
+}
+
+.drop-zone.has-file {
+  border-style: solid;
+  border-color: var(--neon-green);
+  background: rgba(57, 255, 20, 0.05);
+}
+
+.drop-zone-content {
+  pointer-events: none;
+}
+
+.drop-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 0 10px var(--neon-cyan));
+}
+
+.drop-text {
+  font-size: 18px;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 5px var(--neon-cyan);
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.drop-subtext {
+  font-size: 14px;
+  color: var(--neon-pink);
+  text-shadow: 0 0 3px var(--neon-pink);
+  margin: 8px 0 24px 0;
+}
+
+.drop-zone button {
+  pointer-events: all;
+}
+
+.file-info {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(57, 255, 20, 0.05);
+  border: 2px solid var(--neon-green);
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.file-name {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 3px var(--neon-cyan);
+  flex: 1;
+  word-break: break-all;
+  margin-right: 16px;
+}
+
+.file-size {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--neon-green);
+  text-shadow: 0 0 3px var(--neon-green);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.download-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.download-btn {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: rgba(191, 0, 255, 0.1);
+  border: 2px solid var(--neon-purple);
+  border-radius: 4px;
+  color: var(--neon-purple);
+  text-decoration: none;
+  font-family: 'Orbitron', monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+  box-shadow: 0 0 10px rgba(191, 0, 255, 0.3);
+  cursor: pointer;
+}
+
+.download-btn:hover {
+  background: rgba(191, 0, 255, 0.3);
+  box-shadow: 0 0 20px var(--neon-purple), 0 0 30px var(--neon-purple);
+  transform: translateY(-2px);
+  color: var(--neon-yellow);
+  border-color: var(--neon-yellow);
+}
+
+.download-btn:active {
+  transform: translateY(0);
+}
+
+.download-icon {
+  font-size: 20px;
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+.download-label {
+  font-size: 14px;
+}

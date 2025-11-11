@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>人声与伴奏分离工具 - CYBERPUNK EDITION</title>
   <link rel="stylesheet" href="./style.css">
 </head>
@@ -15,20 +16,24 @@
     <section class="card">
       <div class="field">
         <label>输入文件</label>
-        <div class="file-row">
-          <button id="select-file" class="primary">选择文件</button>
-          <span id="file-name" class="muted">尚未选择</span>
+        <div id="drop-zone" class="drop-zone">
+          <div class="drop-zone-content">
+            <div class="drop-icon">🎵</div>
+            <p class="drop-text">拖放音频文件到此处</p>
+            <p class="drop-subtext">或</p>
+            <input type="file" id="file-input" accept="audio/*,.wav,.mp3,.flac,.ogg,.aac,.m4a" hidden>
+            <button id="select-file" class="primary">点击选择文件</button>
+          </div>
+        </div>
+        <div id="file-info" class="file-info" hidden>
+          <span id="file-name" class="file-name"></span>
+          <span id="file-size" class="file-size"></span>
         </div>
       </div>
 
       <div class="field">
         <label for="format">输出格式</label>
         <select id="format"></select>
-      </div>
-
-      <div class="field">
-        <label for="out-dir">输出目录（可选）</label>
-        <input id="out-dir" type="text" placeholder="默认将创建在源文件同级的 output 目录" />
       </div>
 
       <div class="actions">
@@ -40,10 +45,16 @@
       <h2>处理状态</h2>
       <pre id="log"></pre>
       <div class="result" id="result" hidden>
-        <p>完成！输出目录：</p>
-        <code id="result-path"></code>
-        <div class="result-actions">
-          <button id="open-folder">打开输出目录</button>
+        <p>完成！下载文件：</p>
+        <div class="download-links">
+          <a id="download-instrumental" class="download-btn" download>
+            <span class="download-icon">⬇</span>
+            <span class="download-label">下载伴奏</span>
+          </a>
+          <a id="download-vocal" class="download-btn" download>
+            <span class="download-icon">⬇</span>
+            <span class="download-label">下载人声</span>
+          </a>
         </div>
       </div>
     </section>
