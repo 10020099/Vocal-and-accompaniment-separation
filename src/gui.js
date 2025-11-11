@@ -22,10 +22,11 @@ async function handleSelectFile() {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 640,
-    height: 480,
-    resizable: false,
-    title: '人声与伴奏分离工具',
+    width: 900,
+    height: 700,
+    resizable: true,
+    title: '人声与伴奏分离工具 - CYBERPUNK EDITION',
+    backgroundColor: '#0a0a0f',
     webPreferences: {
       preload: resolve(__dirname, 'preload.js'),
     },
