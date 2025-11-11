@@ -42,3 +42,8 @@ coverage/
 tmp/
 temp/
 *.tmp
+
+# Upload and output directories
+uploads/
+outputs/
+output/
