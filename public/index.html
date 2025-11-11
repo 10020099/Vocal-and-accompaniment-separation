@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>人声与伴奏分离工具</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>人声与伴奏分离工具</h1>
+      <p>使用 FFmpeg 对立体声文件进行相加/相减，快速分离人声与伴奏。</p>
+    </header>
+
+    <section class="card">
+      <div class="field">
+        <label>输入文件</label>
+        <div class="file-row">
+          <button id="select-file" class="primary">选择文件</button>
+          <span id="file-name" class="muted">尚未选择</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="format">输出格式</label>
+        <select id="format"></select>
+      </div>
+
+      <div class="field">
+        <label for="out-dir">输出目录（可选）</label>
+        <input id="out-dir" type="text" placeholder="默认将创建在源文件同级的 output 目录" />
+      </div>
+
+      <div class="actions">
+        <button id="start" class="primary" disabled>开始分离</button>
+      </div>
+    </section>
+
+    <section class="card" id="log-panel" hidden>
+      <h2>处理状态</h2>
+      <pre id="log"></pre>
+      <div class="result" id="result" hidden>
+        <p>完成！输出目录：</p>
+        <code id="result-path"></code>
+        <div class="result-actions">
+          <button id="open-folder">打开输出目录</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./renderer.js"></script>
+</body>
+</html>
