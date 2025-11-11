@@ -14,8 +14,10 @@ const openFolderBtn = document.getElementById('open-folder');
 let currentFile = null;
 let lastOutDir = null;
 
-function appendLog(message) {
-  const text = `[${new Date().toLocaleTimeString()}] ${message}`;
+function appendLog(message, type = 'info') {
+  const timestamp = new Date().toLocaleTimeString();
+  const prefix = type === 'success' ? '✓' : type === 'error' ? '✗' : '▸';
+  const text = `${prefix} [${timestamp}] ${message}`;
   logArea.textContent += text + '\n';
   logArea.scrollTop = logArea.scrollHeight;
 }
@@ -38,21 +40,24 @@ selectFileBtn.addEventListener('click', async () => {
   }
   currentFile = filePath;
   fileNameEl.textContent = filePath;
+  fileNameEl.classList.remove('muted');
   startBtn.disabled = false;
   logPanel.hidden = false;
   logArea.textContent = '';
   resultBlock.hidden = true;
-  appendLog(`已选择文件: ${filePath}`);
+  appendLog(`已选择文件: ${filePath}`, 'info');
 });
 
 startBtn.addEventListener('click', async () => {
   if (!currentFile) {
-    appendLog('请先选择文件');
+    appendLog('请先选择文件', 'error');
     return;
   }
 
   startBtn.disabled = true;
-  appendLog('开始分离...');
+  appendLog('═══════════════════════════════════════════', 'info');
+  appendLog('>>> 初始化分离进程...', 'info');
+  appendLog('═══════════════════════════════════════════', 'info');
 
   const format = formatSelect.value || 'wav';
   const outDir = outDirInput.value.trim() || undefined;
@@ -71,14 +76,16 @@ startBtn.addEventListener('click', async () => {
     const { instrumentalPath, vocalPath, outDir: resultDir } = response.result;
     lastOutDir = resultDir;
 
-    appendLog('伴奏已输出: ' + instrumentalPath);
-    appendLog('人声已输出: ' + vocalPath);
+    appendLog('───────────────────────────────────────────', 'info');
+    appendLog('伴奏已输出: ' + instrumentalPath, 'success');
+    appendLog('人声已输出: ' + vocalPath, 'success');
+    appendLog('───────────────────────────────────────────', 'info');
 
     resultPathEl.textContent = resultDir;
     resultBlock.hidden = false;
-    appendLog('处理完成');
+    appendLog('▓▓▓▓▓▓▓▓▓▓ 处理完成 ▓▓▓▓▓▓▓▓▓▓', 'success');
   } catch (err) {
-    appendLog('处理失败: ' + err.message);
+    appendLog('>>> 处理失败: ' + err.message, 'error');
   } finally {
     startBtn.disabled = false;
   }
@@ -86,10 +93,11 @@ startBtn.addEventListener('click', async () => {
 
 openFolderBtn.addEventListener('click', () => {
   if (!lastOutDir) {
-    appendLog('当前没有可打开的目录');
+    appendLog('当前没有可打开的目录', 'error');
     return;
   }
   window.api.openFolder(lastOutDir);
+  appendLog('>>> 正在打开输出目录...', 'info');
 });
 
 initFormats();
