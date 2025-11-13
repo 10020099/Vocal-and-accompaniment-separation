@@ -3,62 +3,337 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>人声与伴奏分离工具 - CYBERPUNK EDITION</title>
+  <title>VocalSplit - AI音频分离工具</title>
   <link rel="stylesheet" href="./style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <main class="container">
-    <header>
-      <h1>人声与伴奏分离工具</h1>
-      <p>使用 FFmpeg 对立体声文件进行相加/相减，快速分离人声与伴奏。</p>
-    </header>
+  <div class="background-animation"></div>
+  
+  <!-- Header Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18V5l12-2v13M9 9l12-2M3 13a4 4 0 108 0 4 4 0 00-8 0zM15 16a4 4 0 108 0 4 4 0 00-8 0z"/>
+        </svg>
+        <span class="logo-text">VocalSplit</span>
+      </div>
+      <div class="nav-links">
+        <a href="#features" class="nav-link">功能特点</a>
+        <a href="#about" class="nav-link">关于</a>
+        <a href="https://github.com" target="_blank" class="nav-link">
+          <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </nav>
 
-    <section class="card">
-      <div class="field">
-        <label>输入文件</label>
-        <div id="drop-zone" class="drop-zone">
-          <div class="drop-zone-content">
-            <div class="drop-icon">🎵</div>
-            <p class="drop-text">拖放音频文件到此处</p>
-            <p class="drop-subtext">或</p>
-            <input type="file" id="file-input" accept="audio/*,.wav,.mp3,.flac,.ogg,.aac,.m4a" hidden>
-            <button id="select-file" class="primary">点击选择文件</button>
+  <!-- Main Content -->
+  <main class="main-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="gradient-text">AI智能音频分离</span>
+        </h1>
+        <p class="hero-subtitle">
+          使用先进的音频处理技术，将歌曲中的人声与伴奏完美分离
+        </p>
+        <div class="hero-features">
+          <div class="feature-tag">
+            <svg class="feature-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/>
+            </svg>
+            快速处理
+          </div>
+          <div class="feature-tag">
+            <svg class="feature-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M9 12H4a1 1 0 01-1-1V5a1 1 0 011-1h5V1a1 1 0 011-1h4a1 1 0 011 1v3h5a1 1 0 011 1v6a1 1 0 01-1 1h-5v5a1 1 0 01-1 1h-4a1 1 0 01-1-1v-5z"/>
+            </svg>
+            高品质输出
+          </div>
+          <div class="feature-tag">
+            <svg class="feature-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M3 12v3c0 1.657 3.134 3 7 3s7-1.343 7-3v-3c0 1.657-3.134 3-7 3s-7-1.343-7-3z"/>
+              <path d="M3 7v3c0 1.657 3.134 3 7 3s7-1.343 7-3V7c0 1.657-3.134 3-7 3S3 8.657 3 7z"/>
+              <path d="M17 5c0 1.657-3.134 3-7 3S3 6.657 3 5s3.134-3 7-3 7 1.343 7 3z"/>
+            </svg>
+            多格式支持
           </div>
         </div>
-        <div id="file-info" class="file-info" hidden>
-          <span id="file-name" class="file-name"></span>
-          <span id="file-size" class="file-size"></span>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="format">输出格式</label>
-        <select id="format"></select>
-      </div>
-
-      <div class="actions">
-        <button id="start" class="primary" disabled>开始分离</button>
       </div>
     </section>
 
-    <section class="card" id="log-panel" hidden>
-      <h2>处理状态</h2>
-      <pre id="log"></pre>
-      <div class="result" id="result" hidden>
-        <p>完成！下载文件：</p>
-        <div class="download-links">
-          <a id="download-instrumental" class="download-btn" download>
-            <span class="download-icon">⬇</span>
-            <span class="download-label">下载伴奏</span>
+    <!-- Upload Section -->
+    <section class="upload-section">
+      <div class="upload-card">
+        <div class="upload-header">
+          <h2 class="section-title">上传音频文件</h2>
+          <p class="section-subtitle">支持 WAV, MP3, FLAC, OGG, AAC, M4A 格式</p>
+        </div>
+
+        <div id="drop-zone" class="drop-zone">
+          <div class="drop-zone-content">
+            <div class="upload-icon-wrapper">
+              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 15V3m0 0l4 4m-4-4l-4 4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/>
+              </svg>
+            </div>
+            <p class="upload-text">拖放音频文件到此处</p>
+            <p class="upload-subtext">或者点击下方按钮选择文件</p>
+            <input type="file" id="file-input" accept="audio/*,.wav,.mp3,.flac,.ogg,.aac,.m4a" hidden>
+            <button id="select-file" class="btn btn-primary">
+              <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"/>
+              </svg>
+              选择文件
+            </button>
+          </div>
+
+          <!-- File Info Display -->
+          <div id="file-info" class="file-info" hidden>
+            <div class="file-info-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 19V6l12-3v11M9 12l12-3M3 13a4 4 0 108 0 4 4 0 00-8 0zM15 16a4 4 0 108 0 4 4 0 00-8 0z"/>
+              </svg>
+            </div>
+            <div class="file-info-details">
+              <span id="file-name" class="file-name"></span>
+              <span id="file-size" class="file-size"></span>
+            </div>
+            <button id="remove-file" class="remove-file-btn">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Options Section -->
+        <div class="options-section">
+          <div class="option-group">
+            <label class="option-label" for="format">
+              <svg class="option-icon" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
+                <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"/>
+              </svg>
+              输出格式
+            </label>
+            <div class="select-wrapper">
+              <select id="format" class="custom-select"></select>
+              <svg class="select-arrow" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="action-section">
+          <button id="start" class="btn btn-large btn-gradient" disabled>
+            <span class="btn-text">开始分离音频</span>
+            <svg class="btn-arrow" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress Section -->
+    <section id="progress-section" class="progress-section" hidden>
+      <div class="progress-card">
+        <h3 class="progress-title">处理中...</h3>
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <p id="progress-status" class="progress-status">正在上传文件...</p>
+        
+        <!-- Processing Animation -->
+        <div class="processing-animation">
+          <div class="wave-container">
+            <div class="wave wave1"></div>
+            <div class="wave wave2"></div>
+            <div class="wave wave3"></div>
+          </div>
+        </div>
+
+        <!-- Log Area -->
+        <div class="log-container">
+          <div class="log-header">
+            <svg class="log-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414z"/>
+            </svg>
+            处理日志
+          </div>
+          <pre id="log" class="log-area"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Result Section -->
+    <section id="result-section" class="result-section" hidden>
+      <div class="result-card">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3 class="result-title">处理完成！</h3>
+        <p class="result-subtitle">您的音频已成功分离为人声和伴奏两个部分</p>
+
+        <div class="download-grid">
+          <a id="download-vocal" class="download-card" download>
+            <div class="download-card-icon vocal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+              </svg>
+            </div>
+            <div class="download-card-content">
+              <h4 class="download-title">人声文件</h4>
+              <p class="download-subtitle">仅包含人声部分</p>
+              <span class="download-filename" id="vocal-filename"></span>
+            </div>
+            <div class="download-action">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/>
+              </svg>
+              下载
+            </div>
           </a>
-          <a id="download-vocal" class="download-btn" download>
-            <span class="download-icon">⬇</span>
-            <span class="download-label">下载人声</span>
+
+          <a id="download-instrumental" class="download-card" download>
+            <div class="download-card-icon instrumental">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 19V6l12-3v11M9 12l12-3M3 13a4 4 0 108 0 4 4 0 00-8 0zM15 16a4 4 0 108 0 4 4 0 00-8 0z"/>
+              </svg>
+            </div>
+            <div class="download-card-content">
+              <h4 class="download-title">伴奏文件</h4>
+              <p class="download-subtitle">仅包含背景音乐</p>
+              <span class="download-filename" id="instrumental-filename"></span>
+            </div>
+            <div class="download-action">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/>
+              </svg>
+              下载
+            </div>
           </a>
+        </div>
+
+        <button id="process-another" class="btn btn-secondary">
+          <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"/>
+          </svg>
+          处理另一个文件
+        </button>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+      <div class="section-container">
+        <h2 class="section-title text-center">功能特点</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">极速处理</h3>
+            <p class="feature-description">采用高效的FFmpeg引擎，快速完成音频分离任务</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">精准分离</h3>
+            <p class="feature-description">使用立体声声道算法，精确分离人声与伴奏</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">多格式支持</h3>
+            <p class="feature-description">支持WAV、MP3、FLAC等主流音频格式的输入输出</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">隐私安全</h3>
+            <p class="feature-description">本地处理，无需上传至云端，保护您的隐私安全</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">批量处理</h3>
+            <p class="feature-description">支持连续处理多个文件，提高工作效率</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+            </div>
+            <h3 class="feature-title">一键下载</h3>
+            <p class="feature-description">处理完成后可直接下载分离后的音频文件</p>
+          </div>
         </div>
       </div>
     </section>
   </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4 class="footer-title">VocalSplit</h4>
+          <p class="footer-description">专业的AI音频分离工具，让音乐创作更简单</p>
+        </div>
+        <div class="footer-section">
+          <h4 class="footer-title">快速链接</h4>
+          <ul class="footer-links">
+            <li><a href="#features">功能特点</a></li>
+            <li><a href="#about">关于我们</a></li>
+            <li><a href="#">使用教程</a></li>
+            <li><a href="#">API文档</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4 class="footer-title">联系方式</h4>
+          <ul class="footer-links">
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">Email</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 VocalSplit. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
 
   <script src="./renderer.js"></script>
 </body>
