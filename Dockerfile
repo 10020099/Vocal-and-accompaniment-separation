@@ -5,7 +5,7 @@ WORKDIR /app
 
 # ---- Stage 2: Prepare dependency recipe ----
 FROM chef AS planner
-COPY Cargo.toml Cargo.lock* ./
+COPY Cargo.toml ./
 COPY src/ src/
 RUN cargo chef prepare --recipe-path recipe.json
 
@@ -13,7 +13,7 @@ RUN cargo chef prepare --recipe-path recipe.json
 FROM chef AS builder
 COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
-COPY Cargo.toml Cargo.lock* ./
+COPY Cargo.toml ./
 COPY src/ src/
 RUN cargo build --release
 
