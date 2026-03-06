@@ -450,5 +450,5 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ===== Console Welcome Message =====
-console.log('%c🎵 VocalSplit - AI音频分离工具 🎵', 'font-size: 20px; color: #6366f1; font-weight: bold;');
+console.log('%c🎵 VocalSplit - 人声与伴奏分离工具 🎵', 'font-size: 20px; color: #6366f1; font-weight: bold;');
 console.log('%c欢迎使用 VocalSplit！如有问题请访问 GitHub 仓库获取帮助。', 'color: #666;');
